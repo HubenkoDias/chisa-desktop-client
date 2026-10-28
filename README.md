@@ -8,7 +8,7 @@ Branch `chisa` adds:
   a single downscaled screenshot is attached so she can comment on what is on the screen
   (no continuous screen stream needed).
 
-Backend: Open-LLM-VTuber fork, branch `chisa`.
+Backend: [chisa-ai-companion](https://github.com/HubenkoDias/chisa-ai-companion), branch `chisa`.
 Licensed under the Open-LLM-VTuber License 1.0 (Apache 2.0 with additional conditions) —
 non-commercial use only, see [LICENSE](LICENSE).
 
