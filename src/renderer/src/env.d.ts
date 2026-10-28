@@ -6,5 +6,6 @@ interface Window {
     onCursorPosition?: (
       callback: (pos: { x: number; y: number; width: number; height: number }) => void,
     ) => () => void
+    takeScreenshot?: () => Promise<string | null>
   }
 }

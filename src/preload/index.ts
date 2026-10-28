@@ -70,6 +70,7 @@ const api = {
     ipcRenderer.on('cursor-position', handler);
     return () => ipcRenderer.removeListener('cursor-position', handler);
   },
+  takeScreenshot: (): Promise<string | null> => ipcRenderer.invoke('take-screenshot'),
   getConfigFiles: () => ipcRenderer.invoke('get-config-files'),
   updateConfigFiles: (files: ConfigFile[]) => {
     ipcRenderer.send('update-config-files', files);

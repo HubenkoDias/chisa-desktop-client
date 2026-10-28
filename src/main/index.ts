@@ -98,6 +98,23 @@ startCursorTracking();
     const sources = await desktopCapturer.getSources({ types: ['screen'] });
     return sources[0].id;
   });
+
+  // --- Chisa: one-shot screenshot for proactive speech -----------------------
+  // Unlike get-screen-capture (which starts a continuous stream), this grabs a
+  // single downscaled frame of the primary display and returns it as a JPEG data URL.
+  ipcMain.handle('take-screenshot', async () => {
+    const display = screen.getPrimaryDisplay();
+    const { width, height } = display.size;
+    const scale = Math.min(1, 1280 / width); // ~1280px wide is plenty for the model
+    const sources = await desktopCapturer.getSources({
+      types: ['screen'],
+      thumbnailSize: { width: Math.round(width * scale), height: Math.round(height * scale) },
+    });
+    const source = sources.find((s) => s.display_id === String(display.id)) ?? sources[0];
+    if (!source || source.thumbnail.isEmpty()) return null;
+    return `data:image/jpeg;base64,${source.thumbnail.toJPEG(70).toString('base64')}`;
+  });
+  // ---------------------------------------------------------------------------
 }
 
 app.whenReady().then(() => {
