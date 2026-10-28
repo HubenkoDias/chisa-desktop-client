@@ -62,6 +62,14 @@ const api = {
   setMode: (mode: 'window' | 'pet') => {
     ipcRenderer.send('pre-mode-changed', mode);
   },
+  onCursorPosition: (
+    callback: (pos: { x: number; y: number; width: number; height: number }) => void,
+  ) => {
+    const handler = (_event: any, pos: { x: number; y: number; width: number; height: number }) =>
+      callback(pos);
+    ipcRenderer.on('cursor-position', handler);
+    return () => ipcRenderer.removeListener('cursor-position', handler);
+  },
   getConfigFiles: () => ipcRenderer.invoke('get-config-files'),
   updateConfigFiles: (files: ConfigFile[]) => {
     ipcRenderer.send('update-config-files', files);

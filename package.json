@@ -68,5 +68,10 @@
     "typescript": "~5.5.2",
     "vite": "^5.3.1",
     "vite-plugin-static-copy": "^2.3.1"
+  },
+  "allowScripts": {
+    "electron@31.7.7": true,
+    "esbuild@0.21.5": true,
+    "@swc/core@1.11.22": true
   }
 }

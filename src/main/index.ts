@@ -1,5 +1,5 @@
 /* eslint-disable no-shadow */
-import { app, ipcMain, globalShortcut, desktopCapturer } from "electron";
+import { app, ipcMain, globalShortcut, desktopCapturer, screen } from "electron";
 import { electronApp, optimizer } from "@electron-toolkit/utils";
 import { WindowManager } from "./window-manager";
 import { MenuManager } from "./menu-manager";
@@ -7,8 +7,35 @@ import { MenuManager } from "./menu-manager";
 let windowManager: WindowManager;
 let menuManager: MenuManager;
 let isQuitting = false;
+// --- Chisa: global cursor tracking -----------------------------------------
+// The renderer only sees the mouse over its own window. The main process can
+// read the cursor anywhere on the screen, so it streams the position to the
+// renderer (~30 fps) in window-relative coordinates.
+let cursorTimer: NodeJS.Timeout | null = null;
+let lastCursor = { x: -1, y: -1 };
 
+function startCursorTracking(): void {
+  if (cursorTimer) return;
+  cursorTimer = setInterval(() => {
+    const win = windowManager?.getWindow();
+    if (!win || win.isDestroyed() || !win.isVisible()) return;
+
+    const point = screen.getCursorScreenPoint();
+    if (point.x === lastCursor.x && point.y === lastCursor.y) return; // nothing moved
+    lastCursor = point;
+
+    const bounds = win.getContentBounds();
+    win.webContents.send("cursor-position", {
+      x: point.x - bounds.x, // relative to the window content
+      y: point.y - bounds.y,
+      width: bounds.width,
+      height: bounds.height,
+    });
+  }, 33);
+}
+// ---------------------------------------------------------------------------
 function setupIPC(): void {
+startCursorTracking();
   ipcMain.handle("get-platform", () => process.platform);
 
   ipcMain.on("set-ignore-mouse-events", (_event, ignore: boolean) => {

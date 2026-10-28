@@ -240,7 +240,39 @@ export const useLive2DModel = ({
       }
     }
   }, [canvasRef, modelInfo]);
+  // --- Chisa: follow the global cursor --------------------------------------
+  // The main process streams the cursor position (window-relative CSS pixels).
+  // We convert it into the same coordinate space as the model matrix and aim the
+  // gaze from the model's head toward the cursor, so it works in pet mode where
+  // the window covers the whole screen and the model stands off-center.
+  useEffect(() => {
+    const api = (window as any).api;
+    if (!api?.onCursorPosition) return undefined; // web mode: no Electron bridge
 
+    const HEAD_Y = 0.4; // how far the head is above the model center (model units)
+    const RANGE = 1.0;  // distance at which she turns her head fully
+    const clamp = (v: number) => Math.max(-1, Math.min(1, v));
+
+    const unsubscribe = api.onCursorPosition((pos: { x: number; y: number }) => {
+      const adapter = (window as any).getLAppAdapter?.();
+      const model = adapter?.getModel();
+      const view = LAppDelegate.getInstance().getView();
+      const canvas = canvasRef.current;
+      if (!model || !view || !canvas || !model._modelMatrix) return;
+
+      const rect = canvas.getBoundingClientRect();
+      const scale = canvas.width / canvas.clientWidth; // CSS px -> device px
+      const cursorX = view._deviceToScreen.transformX((pos.x - rect.left) * scale);
+      const cursorY = view._deviceToScreen.transformY((pos.y - rect.top) * scale);
+
+      const m = model._modelMatrix.getArray();
+      const dx = clamp((cursorX - m[12]) / RANGE);
+      const dy = clamp((cursorY - (m[13] + HEAD_Y)) / RANGE);
+      model.setDragging(dx, dy); // built-in Live2D look-at: head, eyes, body
+    });
+    return unsubscribe;
+  }, [canvasRef]);
+  // ---------------------------------------------------------------------------
   const handleMouseMove = useCallback((e: React.MouseEvent) => {
     const adapter = (window as any).getLAppAdapter?.();
     const view = LAppDelegate.getInstance().getView();
