@@ -1,3 +1,4 @@
+// Modified by HubenkoDias for Chisa (2026). Changes are marked with "Chisa:". See README.md.
 /* eslint-disable no-shadow */
 import { app, ipcMain, globalShortcut, desktopCapturer, screen } from "electron";
 import { electronApp, optimizer } from "@electron-toolkit/utils";

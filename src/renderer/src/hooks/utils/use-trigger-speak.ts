@@ -1,3 +1,4 @@
+// Modified by HubenkoDias for Chisa (2026). Changes are marked with "Chisa:". See README.md.
 import { useCallback } from 'react';
 import { useWebSocket } from '@/context/websocket-context';
 import { useMediaCapture } from './use-media-capture';

@@ -1,3 +1,4 @@
+// Modified by HubenkoDias for Chisa (2026). Changes are marked with "Chisa:". See README.md.
 interface Window {
   api?: {
     setIgnoreMouseEvents: (ignore: boolean) => void

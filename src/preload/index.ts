@@ -1,3 +1,4 @@
+// Modified by HubenkoDias for Chisa (2026). Changes are marked with "Chisa:". See README.md.
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import electron from 'electron';
 const { contextBridge, ipcRenderer, desktopCapturer } = electron;

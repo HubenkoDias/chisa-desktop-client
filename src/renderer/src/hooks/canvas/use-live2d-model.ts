@@ -1,3 +1,4 @@
+// Modified by HubenkoDias for Chisa (2026). Changes are marked with "Chisa:". See README.md.
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable no-use-before-define */
