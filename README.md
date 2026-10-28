@@ -13,6 +13,7 @@ Licensed under the Open-LLM-VTuber License 1.0 (Apache 2.0 with additional condi
 non-commercial use only, see [LICENSE](LICENSE).
 
 ---
+
 # Open LLM Vtuber
 
 An Electron application with React and TypeScript
